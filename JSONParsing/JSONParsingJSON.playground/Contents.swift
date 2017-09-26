@@ -27,11 +27,11 @@ let jsonString = "{" +
         "}]" +
     "}"
 
-let data = jsonString.dataUsingEncoding(NSUTF8StringEncoding)
+let data = jsonString.data(using: String.Encoding.utf8)
 
 do {
     // Parse JSON
-    if let json = try NSJSONSerialization.JSONObjectWithData(data!, options: .AllowFragments) as? [String: AnyObject] {
+    if let json = try JSONSerialization.jsonObject(with: data!, options: .allowFragments) as? [String: AnyObject] {
         var labels = [String]()
         if let locations = json["locations"] as? [[String: AnyObject]] {
             for location in locations {
@@ -42,10 +42,9 @@ do {
 
             do {
                 // Serialize instance
-                let json2 = try NSJSONSerialization.dataWithJSONObject(locations, options: .PrettyPrinted)
-                let jsonString2 = NSString(data: data!, encoding: NSUTF8StringEncoding)
-                print("jsonString2=\(jsonString2)")
-                assert(jsonString == jsonString2)
+                let json2 = try JSONSerialization.data(withJSONObject: locations, options: .prettyPrinted)
+                let jsonString2 = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)
+                print("jsonString2=\(jsonString2 ?? "???")")
             } catch let error as NSError {
                 print(error.localizedDescription)
             }
